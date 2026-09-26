@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CYBER CLASH // Stone Paper Scissors Arena</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Rajdhani:wght@500;600;700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="theme-cyberpunk">
+  <!-- Dynamic Particle Canvas Background -->
+  <canvas id="bg-canvas"></canvas>
+  <div class="scanlines"></div>
+  <div class="vignette"></div>
+
+  <!-- Notification Toast Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Header & Navigation -->
+  <header class="game-header">
+    <div class="brand">
+      <div class="logo-icon">⚡</div>
+      <div class="brand-text">
+        <h1 class="glitch-text" data-text="CYBER CLASH">CYBER CLASH</h1>
+        <p class="subtitle">STONE • PAPER • SCISSORS // ULTRA EDITION</p>
+      </div>
+    </div>
+
+    <div class="header-controls">
+      <!-- Mode Selector -->
+      <div class="mode-select-pill">
+        <button class="mode-btn active" data-mode="classic">🎮 Classic (main.py)</button>
+        <button class="mode-btn" data-mode="bestof">🏆 Best of 5</button>
+        <button class="mode-btn" data-mode="survival">⚡ Survival Blitz</button>
+        <button class="mode-btn" data-mode="boss">👹 Cyber Boss</button>
+      </div>
+
+      <!-- Sound & Settings -->
+      <div class="utility-btns">
+        <button id="bgm-toggle" class="icon-btn" title="Toggle Synthwave BGM">
+          <span class="btn-icon">🎵</span>
+          <span class="btn-label">BGM</span>
+        </button>
+        <button id="sfx-toggle" class="icon-btn" title="Toggle Sound FX">
+          <span class="btn-icon">🔊</span>
+          <span class="btn-label">SFX</span>
+        </button>
+        <button id="stats-toggle" class="icon-btn" title="View Statistics">
+          <span class="btn-icon">📊</span>
+          <span class="btn-label">Stats</span>
+        </button>
+        <button id="help-toggle" class="icon-btn" title="Game Rules & Info">
+          <span class="btn-icon">❓</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Game Container -->
+  <main class="main-container">
+
+    <!-- Top Scoreboard Bar -->
+    <section class="scoreboard-section">
+      <!-- Player Card -->
+      <div class="player-hud hud-player">
+        <div class="avatar-wrap">
+          <div class="avatar player-avatar">👨‍💻</div>
+          <div class="player-badge">YOU</div>
+        </div>
+        <div class="hud-details">
+          <div class="hud-name">Player</div>
+          <div class="hud-score-row">
+            <span class="score-num" id="player-score">0</span>
+            <span class="score-label">PTS</span>
+          </div>
+          <!-- Streak Indicator -->
+          <div class="streak-pill" id="player-streak-pill">
+            <span class="fire-icon">🔥</span>
+            <span id="player-streak">0</span> Streak
+          </div>
+        </div>
+      </div>
+
+      <!-- Center Match Info / Versus -->
+      <div class="center-hud">
+        <div class="round-counter" id="round-counter-display">ROUND 1</div>
+        <div class="vs-badge">VS</div>
+        <div class="mode-display-tag" id="current-mode-label">ENDLESS ARCADE</div>
+        
+        <!-- Timer bar for Survival Blitz mode (hidden by default) -->
+        <div class="timer-container" id="timer-container" style="display: none;">
+          <div class="timer-bar" id="timer-bar"></div>
+          <span class="timer-text" id="timer-text">3.0s</span>
+        </div>
+
+        <!-- Boss Health Bar (hidden by default) -->
+        <div class="boss-health-container" id="boss-health-container" style="display: none;">
+          <div class="boss-name-tag" id="boss-title">🤖 CYBER TITAN [HP: 100/100]</div>
+          <div class="boss-hp-track">
+            <div class="boss-hp-fill" id="boss-hp-fill" style="width: 100%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Computer / Boss Card -->
+      <div class="player-hud hud-cpu">
+        <div class="hud-details text-right">
+          <div class="hud-name" id="cpu-name">AI Core</div>
+          <div class="hud-score-row">
+            <span class="score-num" id="cpu-score">0</span>
+            <span class="score-label">PTS</span>
+          </div>
+          <div class="ai-status-pill" id="ai-status-pill">
+            <span class="pulse-dot"></span>
+            <span id="ai-status-text">CALCULATING</span>
+          </div>
+        </div>
+        <div class="avatar-wrap">
+          <div class="avatar cpu-avatar" id="cpu-avatar">🤖</div>
+          <div class="player-badge cpu-badge" id="cpu-badge-label">CPU</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Battle Arena / Clash Stage -->
+    <section class="battle-arena" id="battle-arena">
+      <!-- Arena Ambient Background Ring -->
+      <div class="arena-hologram-ring"></div>
+      
+      <!-- Player Fighter Side -->
+      <div class="arena-fighter fighter-left" id="fighter-left">
+        <div class="choice-hologram" id="player-choice-holo">
+          <div class="holo-pedestal"></div>
+          <div class="holo-icon" id="player-choice-icon">❓</div>
+          <div class="holo-label" id="player-choice-label">READY</div>
+        </div>
+      </div>
+
+      <!-- Center Clash Impact Zone -->
+      <div class="clash-zone" id="clash-zone">
+        <div class="clash-spark" id="clash-spark"></div>
+        <div class="clash-result-banner" id="clash-result-banner">
+          <div class="result-headline" id="result-headline">MAKE YOUR MOVE</div>
+          <div class="result-subtext" id="result-subtext">Choose Stone, Paper, or Scissor below</div>
+        </div>
+      </div>
+
+      <!-- CPU Fighter Side -->
+      <div class="arena-fighter fighter-right" id="fighter-right">
+        <div class="choice-hologram" id="cpu-choice-holo">
+          <div class="holo-pedestal"></div>
+          <div class="holo-icon" id="cpu-choice-icon">❓</div>
+          <div class="holo-label" id="cpu-choice-label">WAITING</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Controls / Action Weapon Selection -->
+    <section class="action-controls">
+      <div class="controls-title">SELECT YOUR WEAPON</div>
+      
+      <div class="weapons-grid">
+        <!-- Stone (1 in main.py) -->
+        <button class="weapon-card card-stone" data-choice="Stone" data-val="1">
+          <div class="card-glow"></div>
+          <div class="card-icon">🪨</div>
+          <div class="card-name">STONE</div>
+          <div class="card-value">Value: +1 (Crushes Scissor)</div>
+          <div class="card-key-hint">Press [1] or [S]</div>
+        </button>
+
+        <!-- Paper (0 in main.py) -->
+        <button class="weapon-card card-paper" data-choice="Paper" data-val="0">
+          <div class="card-glow"></div>
+          <div class="card-icon">📄</div>
+          <div class="card-name">PAPER</div>
+          <div class="card-value">Value: 0 (Wraps Stone)</div>
+          <div class="card-key-hint">Press [2] or [P]</div>
+        </button>
+
+        <!-- Scissor (-1 in main.py) -->
+        <button class="weapon-card card-scissor" data-choice="Scissor" data-val="-1">
+          <div class="card-glow"></div>
+          <div class="card-icon">✂️</div>
+          <div class="card-name">SCISSOR</div>
+          <div class="card-value">Value: -1 (Cuts Paper)</div>
+          <div class="card-key-hint">Press [3] or [C]</div>
+        </button>
+      </div>
+
+      <!-- Secondary Quick Controls -->
+      <div class="quick-actions">
+        <button id="btn-reset-match" class="action-sub-btn">
+          <span>🔄</span> Reset Game
+        </button>
+        <button id="btn-end-match" class="action-sub-btn highlight">
+          <span>🏁</span> Finish & View Final Score (Play=N)
+        </button>
+        <button id="btn-random-pick" class="action-sub-btn">
+          <span>🎲</span> Random Move
+        </button>
+      </div>
+    </section>
+
+    <!-- Recent Match History Feed & Code Info -->
+    <section class="bottom-info-panel">
+      <!-- Live Battle Log -->
+      <div class="history-panel">
+        <div class="panel-header">
+          <span class="panel-title">📜 COMBAT LOG</span>
+          <button id="clear-log-btn" class="text-btn">Clear</button>
+        </div>
+        <div class="history-list" id="history-list">
+          <div class="history-empty">No rounds recorded yet. Choose a move to clash!</div>
+        </div>
+      </div>
+
+      <!-- Python Logic Synchronizer Card -->
+      <div class="python-sync-panel">
+        <div class="panel-header">
+          <span class="panel-title">🐍 PYTHON MAIN.PY LOGIC CORE</span>
+          <span class="badge-status">100% COMPATIBLE</span>
+        </div>
+        <div class="code-preview">
+          <pre><code><span class="code-comment"># Exact rule logic from main.py</span>
+<span class="code-var">D</span> = {<span class="code-str">"Stone"</span>: 1, <span class="code-str">"Paper"</span>: 0, <span class="code-str">"Scissor"</span>: -1}
+<span class="code-comment"># Win conditions:</span>
+<span class="code-kw">if</span> (cpu==1 <span class="code-kw">and</span> choice==0)  -> <span class="code-win">Paper covers Stone (+1)</span>
+<span class="code-kw">if</span> (cpu==0 <span class="code-kw">and</span> choice==-1) -> <span class="code-win">Scissor cuts Paper (+1)</span>
+<span class="code-kw">if</span> (cpu==-1 <span class="code-kw">and</span> choice==1) -> <span class="code-win">Stone crushes Scissor (+1)</span></code></pre>
+        </div>
+        <div class="author-credits">
+          Original Game Engine: <strong>Jaivardhan Singh</strong> • 
+          <a href="https://github.com/jaivardhansingh0502/rock-paper-scissors-python" target="_blank" rel="noopener">GitHub Repo</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Final Match Game-Over Modal (Emulates main.py exit screen) -->
+  <div class="modal-backdrop" id="gameover-modal">
+    <div class="modal-card">
+      <div class="modal-glow"></div>
+      <div class="modal-icon" id="modal-result-icon">🎉</div>
+      <h2 class="modal-title" id="modal-result-title">MATCH FINISHED</h2>
+      <p class="modal-subtitle" id="modal-result-subtitle">Final Scoreboard</p>
+      
+      <div class="final-score-cards">
+        <div class="final-score-card you">
+          <div class="f-label">YOU</div>
+          <div class="f-val" id="modal-player-score">0</div>
+        </div>
+        <div class="final-vs">VS</div>
+        <div class="final-score-card cpu">
+          <div class="f-label">COMPUTER</div>
+          <div class="f-val" id="modal-cpu-score">0</div>
+        </div>
+      </div>
+
+      <div class="winner-announcement" id="modal-winner-text">
+        Overall Winner : You 🎉
+      </div>
+
+      <div class="modal-stats-row" id="modal-stats-breakdown">
+        <!-- populated dynamically -->
+      </div>
+
+      <div class="modal-buttons">
+        <button id="btn-play-again" class="modal-btn primary">
+          <span>🎮</span> Play Again! (Y)
+        </button>
+        <button id="btn-close-modal" class="modal-btn secondary">
+          <span>❌</span> Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Help & Rules Modal -->
+  <div class="modal-backdrop" id="help-modal">
+    <div class="modal-card modal-help">
+      <h2 class="modal-title">📖 GAME GUIDE & RULES</h2>
+      <div class="help-content">
+        <div class="rule-box">
+          <h3>⚡ Core Rules (from main.py)</h3>
+          <ul>
+            <li><strong>🪨 Stone (1)</strong> beats <strong>✂️ Scissor (-1)</strong></li>
+            <li><strong>📄 Paper (0)</strong> beats <strong>🪨 Stone (1)</strong></li>
+            <li><strong>✂️ Scissor (-1)</strong> beats <strong>📄 Paper (0)</strong></li>
+            <li>Same choices result in a <strong>Draw 🤝</strong></li>
+          </ul>
+        </div>
+        <div class="rule-box">
+          <h3>🔥 Game Modes</h3>
+          <ul>
+            <li><strong>Classic:</strong> Continuous match tracking scores just like `main.py`.</li>
+            <li><strong>Best of 5:</strong> First to reach 3 round victories claims the trophy.</li>
+            <li><strong>Survival Blitz:</strong> 3-second rapid move timer. 1 loss ends the streak!</li>
+            <li><strong>Cyber Boss:</strong> Deal damage to the AI Boss by winning rounds!</li>
+          </ul>
+        </div>
+        <div class="rule-box">
+          <h3>⌨️ Keyboard Shortcuts</h3>
+          <p>Press <code>1</code> or <code>S</code> for Stone | <code>2</code> or <code>P</code> for Paper | <code>3</code> or <code>C</code> for Scissor</p>
+        </div>
+      </div>
+      <button id="btn-close-help" class="modal-btn primary">Got It!</button>
+    </div>
+  </div>
+
+  <!-- Stats Modal -->
+  <div class="modal-backdrop" id="stats-modal">
+    <div class="modal-card modal-help">
+      <h2 class="modal-title">📊 CAREER STATISTICS</h2>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-val" id="stat-total-games">0</div>
+          <div class="stat-label">Total Rounds</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" id="stat-win-rate">0%</div>
+          <div class="stat-label">Win Rate</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" id="stat-best-streak">0</div>
+          <div class="stat-label">Best Streak</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" id="stat-fav-weapon">Stone</div>
+          <div class="stat-label">Favorite Weapon</div>
+        </div>
+      </div>
+      <button id="btn-close-stats" class="modal-btn primary" style="margin-top: 1.5rem;">Close Stats</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

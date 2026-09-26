@@ -1,87 +1,79 @@
-# Rock Paper Scissors Game
+# ⚡ Cyber Clash: Stone Paper Scissors (Ultra Edition)
 
-A command-line implementation of the classic Rock Paper Scissors game built in Python. The project demonstrates fundamental Python concepts such as loops, dictionaries, conditional statements, input validation, and random number generation.
+A high-octane Cyberpunk / Neon Arcade implementation of the classic **Stone Paper Scissors** game. Featuring a rich Web UI with battle clash animations, particle physics, retro Web Audio synthesizer, multiple game modes, and full compatibility with the original Python CLI logic!
 
-## Features
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![Python](https://img.shields.io/badge/Python-3.x-brightgreen.svg)
+![HTML5](https://img.shields.io/badge/HTML5-WebAudio-orange.svg)
 
-- Play against the computer
-- Random computer choice using Python's `random` module
-- Input validation
-- Live scoreboard
-- Play Again functionality
-- Final match result
+---
 
-## Technologies Used
+## 🎮 Features & Highlights
 
-- Python 3
+- ⚡ **Cinematic Battle Arena**: Screen-shaking combat clash animations with particle bursts, spark physics, and glowing holographic pedestals.
+- 🎵 **Built-in Web Audio Synthesizer**: Zero external audio dependencies! Real-time sound effects for clashing, victory fanfare, defeat glitch, and procedural synthwave background music.
+- 🕹️ **Multiple Game Modes**:
+  - **Classic Mode**: Continuous scoreboard tracking, exactly replicating `main.py`.
+  - **Best of 5 Tournament**: First to reach 3 round victories takes the championship.
+  - **Survival Blitz**: 3-second rapid move timer with streak multiplier!
+  - **Cyber Boss Raid**: Battle against the 100 HP *Cyber Titan* with boss-rage mechanics!
+- ⌨️ **Keyboard Controls**: Instant hotkeys (`1`/`S` for Stone, `2`/`P` for Paper, `3`/`C` for Scissor, `R` for Random).
+- 📊 **Career Statistics**: Persistent tracking in LocalStorage (Win rate, Best streak, Weapon usage).
+- 🐍 **100% Python Parity**: Keeps the original `main.py` CLI game 100% untouched and functional.
 
-## Project Structure
+---
 
-```
+## 📁 Project Structure
+
+```text
 rock-paper-scissors-python/
-│── main.py
-│── .gitignore
-│── README.md
+│── main.py            # Original Python CLI game (100% intact)
+│── server.py          # Python web server (zero-dependency, auto-opens browser)
+│── index.html         # Cyber Clash Neon Arena UI
+│── styles.css         # Cyberpunk theme, glassmorphism, keyframe animations
+│── script.js          # Web Audio synth, physics engine, clash logic & game modes
+│── README.md          # Project documentation
 ```
 
-## Getting Started
+---
 
-### Clone the repository
+## 🚀 Getting Started
 
+### Option 1: Play the Web Game (via Python Server)
+Run the built-in zero-dependency Python server:
 ```bash
-git clone https://github.com/jaivardhansingh0502/rock-paper-scissors-python.git
+python server.py
 ```
+*This will automatically launch `http://localhost:8000` in your default browser.*
 
-### Navigate to the project
+### Option 2: Play Standalone (No Server Required)
+Simply double-click **`index.html`** in any modern web browser or deploy to **GitHub Pages**!
 
-```bash
-cd rock-paper-scissors-python
-```
-
-### Run the program
-
+### Option 3: Play Original Python CLI Game
+Run the classic terminal game as originally built:
 ```bash
 python main.py
 ```
 
-## Sample Output
+---
 
-```
-Enter your choice (Stone/Paper/Scissor): Stone
+## 🧠 Python Logic Mapping
 
-You chose Stone
-Computer chose Paper
+The mathematical logic follows the exact mapping defined in `main.py`:
+- `Stone` = `1`
+- `Paper` = `0`
+- `Scissor` = `-1`
 
-You Lose!
+| Player Move | CPU Move | Result | Condition |
+| :--- | :--- | :--- | :--- |
+| **Paper (0)** | **Stone (1)** | **Win 🎉** | `cpu == 1 and choice == 0` |
+| **Scissor (-1)** | **Paper (0)** | **Win 🎉** | `cpu == 0 and choice == -1` |
+| **Stone (1)** | **Scissor (-1)** | **Win 🎉** | `cpu == -1 and choice == 1` |
+| *Same* | *Same* | **Draw 🤝** | `cpu == choice` |
 
-----------------
-Scoreboard
-You : 0
-Computer : 1
-----------------
+---
 
-Play Again? (Y/N)
-```
-
-## Concepts Demonstrated
-
-- Dictionaries
-- Conditional statements
-- Loops
-- User input handling
-- Random module
-- Score tracking
-
-## Future Improvements
-
-- Graphical User Interface (Tkinter)
-- Best of 3 / Best of 5 mode
-- Multiplayer support
-- Game statistics
-- Difficulty levels
-
-## Author
+## 👤 Author
 
 **Jaivardhan Singh**
-
-GitHub: https://github.com/jaivardhansingh0502
+- GitHub: [@jaivardhansingh0502](https://github.com/jaivardhansingh0502)
